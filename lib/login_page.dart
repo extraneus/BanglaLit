@@ -98,7 +98,7 @@ class _LoginPageState extends State<LoginPage> {
                     padding: const EdgeInsets.only(bottom: 20.0),
                     child: Text(
                       _errorMessage!,
-                      style: const TextStyle(color: Colors.red),
+                      style: const TextStyle(color: Color.fromARGB(255, 234, 64, 52)),
                       textAlign: TextAlign.center,
                     ),
                   ),

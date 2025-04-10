@@ -760,8 +760,8 @@ class _ContentDetailScreenState extends State<ContentDetailScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.close),
         onPressed: _exitReadingMode,
+        child: const Icon(Icons.close),
       ),
     );
   }

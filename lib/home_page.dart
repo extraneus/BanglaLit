@@ -188,7 +188,7 @@ class _HomePageState extends State<HomePage>
       padding: EdgeInsets.zero,
       children: [
         DrawerHeader(
-          decoration: BoxDecoration(color: Colors.deepPurple),
+          decoration: BoxDecoration(color: const Color.fromARGB(255, 91, 51, 160)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -367,7 +367,7 @@ class _HomePageState extends State<HomePage>
                           end: Alignment.bottomCenter,
                           colors: [
                             Colors.transparent,
-                            Colors.black.withOpacity(0.7),
+                            const Color.fromARGB(255, 10, 10, 10).withOpacity(0.7),
                           ],
                           stops: const [0.6, 1.0],
                         ),
@@ -1079,7 +1079,7 @@ class ContentSearchDelegate extends SearchDelegate<String> {
           await FirebaseFirestore.instance
               .collection(type)
               .where('title', isGreaterThanOrEqualTo: query)
-              .where('title', isLessThanOrEqualTo: query + '\uf8ff')
+              .where('title', isLessThanOrEqualTo: '$query\uf8ff')
               .limit(5)
               .get();
 

@@ -15,10 +15,10 @@ class CreateContentScreen extends StatefulWidget {
   final Map<String, dynamic>? existingContent; // For editing existing content
 
   const CreateContentScreen({
-    Key? key,
+    super.key,
     required this.contentType,
     this.existingContent,
-  }) : super(key: key);
+  });
 
   @override
   _CreateContentScreenState createState() => _CreateContentScreenState();
@@ -502,12 +502,12 @@ class AddChapterScreen extends StatefulWidget {
   final Map<String, dynamic>? existingChapter;
 
   const AddChapterScreen({
-    Key? key,
+    super.key,
     required this.contentId,
     required this.contentType,
     this.isFirstChapter = false,
     this.existingChapter,
-  }) : super(key: key);
+  });
 
   @override
   _AddChapterScreenState createState() => _AddChapterScreenState();
@@ -517,7 +517,7 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _contentController = TextEditingController();
-  List<File> _chapterImages = [];
+  final List<File> _chapterImages = [];
   bool _isUploading = false;
   int _chapterNumber = 1;
 
@@ -892,7 +892,7 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
 class EditProfileScreen extends StatefulWidget {
   final Map<String, dynamic> userData;
 
-  const EditProfileScreen({Key? key, required this.userData}) : super(key: key);
+  const EditProfileScreen({super.key, required this.userData});
 
   @override
   _EditProfileScreenState createState() => _EditProfileScreenState();
