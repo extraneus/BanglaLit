@@ -6,8 +6,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'services/auth_service.dart';
-import 'services/firebase_service.dart';
+import '../services/auth_service.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
+import '../services/firebase_service.dart';
 
 class ContentDetailScreen extends StatefulWidget {
   final String contentId;

@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import '../services/auth_service.dart';
 import '../services/firebase_service.dart';
 import 'content_detail_screen.dart';
+import 'CreateContentScreen.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String userId;
@@ -74,7 +75,7 @@ class _ProfileScreenState extends State<ProfileScreen>
       // Calculate total reads
       _totalReads = userContent.fold(
         0,
-        (sum, content) => sum + (content['reads'] ?? 0),
+        (sum, content) => sum + ((content['reads'] ?? 0) as int),
       );
 
       // Load saved content (only for current user)
