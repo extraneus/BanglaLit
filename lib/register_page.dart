@@ -1,4 +1,4 @@
-// register_page.dart
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'services/auth_service.dart';
@@ -8,7 +8,7 @@ class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
   @override
-  _RegisterPageState createState() => _RegisterPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
 class _RegisterPageState extends State<RegisterPage> {
@@ -17,6 +17,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+
   bool _isLoading = false;
   String? _errorMessage;
 
@@ -39,32 +40,46 @@ class _RegisterPageState extends State<RegisterPage> {
 
     try {
       final authService = Provider.of<AuthService>(context, listen: false);
-      final user = await authService.registerWithEmail(
-        _emailController.text.trim(),
-        _passwordController.text,
-        _nameController.text.trim(),
+      await authService.registerWithEmail(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+        displayName: _nameController.text.trim(),
       );
 
-      if (user != null) {
-        // Navigate to home page on successful registration
-        if (!mounted) return;
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => const HomePage()),
-          (route) => false,
-        );
-      } else {
-        setState(() {
-          _errorMessage = 'Failed to create account. Please try again.';
-        });
-      }
+      if (!mounted) return;
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => const Homepage()),
+        (route) => false,
+      );
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        _errorMessage = _getErrorMessage(e.code);
+      });
     } catch (e) {
       setState(() {
-        _errorMessage = e.toString();
+        _errorMessage = 'Registration failed. Please try again.';
       });
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  String _getErrorMessage(String code) {
+    switch (code) {
+      case 'email-already-in-use':
+        return 'This email is already registered.';
+      case 'invalid-email':
+        return 'Please enter a valid email address.';
+      case 'operation-not-allowed':
+        return 'Email/password accounts are not enabled.';
+      case 'weak-password':
+        return 'Password is too weak.';
+      default:
+        return 'Registration failed. Please try again.';
     }
   }
 
@@ -82,10 +97,13 @@ class _RegisterPageState extends State<RegisterPage> {
               children: [
                 if (_errorMessage != null)
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 20.0),
+                    padding: const EdgeInsets.only(bottom: 16.0),
                     child: Text(
                       _errorMessage!,
-                      style: const TextStyle(color: Colors.red),
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                        fontSize: 14,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -96,8 +114,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.person),
                   ),
+                  textInputAction: TextInputAction.next,
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
+                    if (value == null || value.trim().isEmpty) {
                       return 'Please enter your name';
                     }
                     return null;
@@ -112,8 +131,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     prefixIcon: Icon(Icons.email),
                   ),
                   keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
+                    if (value == null || value.trim().isEmpty) {
                       return 'Please enter your email';
                     }
                     if (!RegExp(
@@ -133,6 +153,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     prefixIcon: Icon(Icons.lock),
                   ),
                   obscureText: true,
+                  textInputAction: TextInputAction.next,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a password';
@@ -152,6 +173,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     prefixIcon: Icon(Icons.lock_outline),
                   ),
                   obscureText: true,
+                  textInputAction: TextInputAction.done,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please confirm your password';
@@ -161,17 +183,32 @@ class _RegisterPageState extends State<RegisterPage> {
                     }
                     return null;
                   },
+                  onFieldSubmitted: (_) => _register(),
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: _isLoading ? null : _register,
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
+                    minimumSize: const Size(double.infinity, 50),
                   ),
                   child:
                       _isLoading
-                          ? const CircularProgressIndicator(color: Colors.white)
+                          ? const SizedBox(
+                            height: 24,
+                            width: 24,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          )
                           : const Text('Register'),
+                ),
+                const SizedBox(height: 16),
+                TextButton(
+                  onPressed:
+                      _isLoading ? null : () => Navigator.of(context).pop(),
+                  child: const Text('Already have an account? Sign In'),
                 ),
               ],
             ),

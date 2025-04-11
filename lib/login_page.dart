@@ -45,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
         if (!mounted) return;
         Navigator.of(
           context,
-        ).pushReplacement(MaterialPageRoute(builder: (_) => const HomePage()));
+        ).pushReplacement(MaterialPageRoute(builder: (_) => const Homepage()));
       } else {
         setState(() {
           _errorMessage = 'Failed to sign in. Please check your credentials.';
@@ -98,7 +98,9 @@ class _LoginPageState extends State<LoginPage> {
                     padding: const EdgeInsets.only(bottom: 20.0),
                     child: Text(
                       _errorMessage!,
-                      style: const TextStyle(color: Color.fromARGB(255, 234, 64, 52)),
+                      style: const TextStyle(
+                        color: Color.fromARGB(255, 234, 64, 52),
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ),
